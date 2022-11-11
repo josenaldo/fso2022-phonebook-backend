@@ -3,7 +3,7 @@ const app = express()
 
 app.use(express.json())
 
-let notes = [
+let persons = [
     {
         id: 1,
         name: 'Arto Hellas',
@@ -28,18 +28,18 @@ let notes = [
 
 app.get('/info', (request, response) => {
     const date = new Date()
-    response.send(`<p>Phonebook has info for ${notes.length} people</p>
+    response.send(`<p>Phonebook has info for ${persons.length} people</p>
     <p>${date}</p>`)
 })
 
 app.get('/api/persons', (request, response) => {
-    response.send(notes)
+    response.send(persons)
 })
 
 app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
 
-    const note = notes.find((n) => n.id === id)
+    const note = persons.find((n) => n.id === id)
 
     if (note) {
         response.json(note)
@@ -51,14 +51,44 @@ app.get('/api/persons/:id', (request, response) => {
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
 
-    const note = notes.find((n) => n.id === id)
+    const note = persons.find((n) => n.id === id)
 
     if (note) {
-        notes = notes.filter((n) => n.id !== id)
+        persons = persons.filter((n) => n.id !== id)
         response.status(204).end()
     } else {
         response.status(404).end()
     }
+})
+
+const randomInt = () => {
+    return Math.floor(Math.random() * Number.MAX_VALUE)
+}
+
+const generateId = () => {
+    const existingIds = persons.map((p) => p.id)
+
+    let newId = randomInt()
+
+    while (existingIds.includes(newId)) {
+        newId = randomInt()
+    }
+
+    return newId
+}
+
+app.post('/api/persons', (request, response) => {
+    const { body } = request
+
+    const person = {
+        id: generateId(),
+        name: body.name,
+        number: body.number,
+    }
+
+    persons = persons.concat(person)
+
+    response.json(person)
 })
 
 const PORT = 3001
