@@ -39,10 +39,10 @@ app.get('/api/persons', (request, response) => {
 app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
 
-    const note = persons.find((n) => n.id === id)
+    const person = persons.find((n) => n.id === id)
 
-    if (note) {
-        response.json(note)
+    if (person) {
+        response.json(person)
     } else {
         response.status(404).end()
     }
@@ -51,9 +51,9 @@ app.get('/api/persons/:id', (request, response) => {
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
 
-    const note = persons.find((n) => n.id === id)
+    const person = persons.find((n) => n.id === id)
 
-    if (note) {
+    if (person) {
         persons = persons.filter((n) => n.id !== id)
         response.status(204).end()
     } else {
@@ -78,12 +78,26 @@ const generateId = () => {
 }
 
 app.post('/api/persons', (request, response) => {
-    const { body } = request
+    const { name, number } = request.body
+
+    if (!name || !number) {
+        return response.status(400).json({
+            error: 'Could not create an entry. Missing name or number.',
+        })
+    }
+
+    const existingPerson = persons.find((p) => p.name === name)
+
+    if (existingPerson) {
+        return response.status(409).json({
+            error: 'Could not createan entry. Name must be unique.',
+        })
+    }
 
     const person = {
         id: generateId(),
-        name: body.name,
-        number: body.number,
+        name: name,
+        number: number,
     }
 
     persons = persons.concat(person)

@@ -1,0 +1,15 @@
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "Josenaldo Matos"
+}
+
+###
+
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "number": "11-99999-9999"
+}
