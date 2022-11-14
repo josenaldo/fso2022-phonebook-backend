@@ -3,8 +3,6 @@ const morgan = require('morgan')
 
 const app = express()
 
-app.use(express.json())
-
 morgan.token('body', (request, response) => {
     const body = request.body
     if (body) {
@@ -13,6 +11,10 @@ morgan.token('body', (request, response) => {
         return null
     }
 })
+
+app.use(express.json())
+app.use(express.static('build'))
+
 app.use(
     morgan(':method :url :status :res[content-length] :response-time ms :body ')
 )
