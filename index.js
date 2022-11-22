@@ -57,33 +57,18 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
+    const id = request.params.id
 
-    const person = persons.find((n) => n.id === id)
-
-    if (person) {
-        persons = persons.filter((n) => n.id !== id)
-        response.status(204).end()
-    } else {
-        response.status(404).end()
-    }
+    Person.deleteOne({ _id: id })
+        .then((result) => {
+            console.log('🟢', result)
+            response.status(204).end()
+        })
+        .catch((err) => {
+            console.log('🔴', err)
+            response.status(404).end()
+        })
 })
-
-const randomInt = () => {
-    return Math.floor(Math.random() * Number.MAX_VALUE)
-}
-
-const generateId = () => {
-    const existingIds = persons.map((p) => p.id)
-
-    let newId = randomInt()
-
-    while (existingIds.includes(newId)) {
-        newId = randomInt()
-    }
-
-    return newId
-}
 
 app.post('/api/persons', (request, response) => {
     const { name, number } = request.body
@@ -94,23 +79,20 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    const existingPerson = persons.find((p) => p.name === name)
+    const person = new Person({
+        name,
+        number,
+    })
 
-    if (existingPerson) {
-        return response.status(409).json({
-            error: 'Could not createan entry. Name must be unique.',
+    person
+        .save()
+        .then((savedPerson) => {
+            response.json(savedPerson)
         })
-    }
-
-    const person = {
-        id: generateId(),
-        name: name,
-        number: number,
-    }
-
-    persons = persons.concat(person)
-
-    response.json(person)
+        .catch((err) => {
+            console.log('🔴', err)
+            response.status(500).end()
+        })
 })
 
 /**
