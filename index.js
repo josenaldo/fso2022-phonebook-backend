@@ -30,33 +30,39 @@ app.use(express.static('build'))
  * ROUTES
  */
 
-app.get('/info', (request, response) => {
-    return Person.find({}).then((persons) => {
-        const date = new Date()
-        response.send(`<p>Phonebook has info for ${persons.length} people</p>
+app.get('/info', (request, response, next) => {
+    return Person.find({})
+        .then((persons) => {
+            const date = new Date()
+            response.send(`<p>Phonebook has info for ${persons.length} people</p>
     <p>${date}</p>`)
-    })
+        })
+        .catch((err) => next(err))
 })
 
-app.get('/api/persons', (request, response) => {
-    return Person.find({}).then((persons) => {
-        response.json(persons)
-    })
+app.get('/api/persons', (request, response, next) => {
+    return Person.find({})
+        .then((persons) => {
+            response.json(persons)
+        })
+        .catch((err) => next(err))
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
     const id = request.params.id
 
     Person.findById(id)
         .then((person) => {
-            response.json(person)
+            if (person) {
+                response.json(person)
+            } else {
+                response.status(404).end()
+            }
         })
-        .catch((err) => {
-            response.status(404).end()
-        })
+        .catch((err) => next(err))
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
     const id = request.params.id
 
     Person.findByIdAndRemove(id)
@@ -64,13 +70,10 @@ app.delete('/api/persons/:id', (request, response) => {
             console.log('🟢', result)
             response.status(204).end()
         })
-        .catch((err) => {
-            console.log('🔴', err)
-            response.status(404).end()
-        })
+        .catch((err) => next(err))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const { name, number } = request.body
 
     if (!name || !number) {
@@ -89,11 +92,32 @@ app.post('/api/persons', (request, response) => {
         .then((savedPerson) => {
             response.json(savedPerson)
         })
-        .catch((err) => {
-            console.log('🔴', err)
-            response.status(500).end()
-        })
+        .catch((err) => next(err))
 })
+
+/**
+ * ERROR HANDLING
+ */
+
+// handler of requests with unknown endpoint
+const unknownEndpoint = (request, response, next) => {
+    response.status(404).send({ error: 'Unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
+// handler of requests with result to errors
+const errorHandler = (error, request, response, next) => {
+    console.error('🔴', error.message)
+
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: 'Malformatted id' })
+    }
+
+    next(error)
+}
+
+app.use(errorHandler)
 
 /**
  * SERVER
