@@ -32,24 +32,33 @@ app.use(express.static('build'))
 
 app.get('/info', (request, response, next) => {
     return Person.find({})
-        .then((persons) => {
+        .then((people) => {
             const date = new Date()
-            response.send(`<p>Phonebook has info for ${persons.length} people</p>
-    <p>${date}</p>`)
+            response.send(
+                `<p>Phonebook has info for ${people.length} people</p><p>${date}</p>`
+            )
         })
         .catch((err) => next(err))
 })
 
-app.get('/api/persons', (request, response, next) => {
-    return Person.find({})
-        .then((persons) => {
-            response.json(persons)
+app.get('/api/people', (request, response, next) => {
+    const searchParams = {}
+
+    const { name } = request.query
+
+    if (name) {
+        searchParams.name = name
+    }
+
+    return Person.find(searchParams)
+        .then((people) => {
+            response.json(people)
         })
         .catch((err) => next(err))
 })
 
-app.get('/api/persons/:id', (request, response, next) => {
-    const id = request.params.id
+app.get('/api/people/:id', (request, response, next) => {
+    const { id } = request.params
 
     Person.findById(id)
         .then((person) => {
@@ -62,8 +71,8 @@ app.get('/api/persons/:id', (request, response, next) => {
         .catch((err) => next(err))
 })
 
-app.delete('/api/persons/:id', (request, response, next) => {
-    const id = request.params.id
+app.delete('/api/people/:id', (request, response, next) => {
+    const { id } = request.params
 
     Person.findByIdAndRemove(id)
         .then((result) => {
@@ -73,7 +82,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
         .catch((err) => next(err))
 })
 
-app.post('/api/persons', (request, response, next) => {
+app.post('/api/people', (request, response, next) => {
     const { name, number } = request.body
 
     if (!name || !number) {
@@ -91,6 +100,22 @@ app.post('/api/persons', (request, response, next) => {
         .save()
         .then((savedPerson) => {
             response.json(savedPerson)
+        })
+        .catch((err) => next(err))
+})
+
+app.put('/api/people/:id', (request, response, next) => {
+    const { id } = request.params
+    const { name, number } = request.body
+
+    const person = {
+        name,
+        number,
+    }
+
+    Person.findByIdAndUpdate(id, person, { new: true })
+        .then((updatedPerson) => {
+            response.json(updatedPerson)
         })
         .catch((err) => next(err))
 })

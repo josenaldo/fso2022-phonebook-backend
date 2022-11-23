@@ -1,7 +1,28 @@
-POST http://localhost:3001/api/persons
+# Create a valid person
+POST http://localhost:3001/api/people
 Content-Type: application/json
 
 {
     "name": "Josenaldo Matos",
+    "number": "11-99999-9999"
+}
+
+###
+
+# Try to create a person without a number will return a 400 HTTP code
+POST http://localhost:3001/api/people
+Content-Type: application/json
+
+{
+    "name": "Josenaldo Matos"
+}
+
+###
+
+# Try to create a person without a name will return a 400 HTTP code
+POST http://localhost:3001/api/people
+Content-Type: application/json
+
+{
     "number": "11-99999-9999"
 }

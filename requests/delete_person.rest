@@ -1,1 +1,13 @@
-DELETE http://localhost:3001/api/persons/2
+# Using an existing ID will remove the corresponding entry and return a 204
+# No Content response.
+DELETE http://localhost:3001/api/people/637e79854733590e6c7a9511
+
+###
+
+# Using an inexistent ID will return a 204 No content response.
+DELETE http://localhost:3001/api/people/637e75ee4733590e6c7a9505
+
+###
+
+# Using an invalid ID will return a 400 Bad Request response.
+DELETE http://localhost:3001/api/people/3a

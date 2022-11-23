@@ -1,1 +1,12 @@
-GET http://localhost:3001/api/persons/1
+# Using a existing ID will return the person with that ID
+GET http://localhost:3001/api/people/637e6bfccce105fb034979c8
+
+###
+
+# Using a non-existing ID will return a 404
+GET http://localhost:3001/api/people/637e6bfccce105fb034979c4
+
+###
+
+# Using a invalid ID will return a 400
+GET http://localhost:3001/api/people/3

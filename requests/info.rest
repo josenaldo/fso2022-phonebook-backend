@@ -1,1 +1,9 @@
+# Info will return a small portion of HTML, with somo data about the
+# database state
 GET http://localhost:3001/info
+
+###
+
+# Unknow routes will return a 404 error, with a error message
+# "Unknown endpoint"
+GET http://localhost:3001/other-thing

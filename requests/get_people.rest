@@ -1,0 +1,9 @@
+# Getting without query parameters will return all the entries a 200
+# status code.
+GET http://localhost:3001/api/people
+
+###
+
+# Getting with the name query parameter will return all the entries that
+# match the name
+GET http://localhost:3001/api/people?name=Maria
