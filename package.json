@@ -12,7 +12,8 @@
         "build:ui": "yarn clean & cd ../fso2022-phonebook-frontend && yarn build && cd ../fso2022-phonebook-backend && yarn copy:ui",
         "deploy": "flyctl deploy",
         "deploy:full": "yarn build:ui && yarn deploy",
-        "logs:prod": "flyctl logs"
+        "logs:prod": "flyctl logs",
+        "lint": "eslint ."
     },
     "author": "Josenaldo de Oliveira Matos Filho",
     "license": "MIT",
@@ -24,6 +25,7 @@
         "morgan": "^1.10.0"
     },
     "devDependencies": {
+        "eslint": "^8.28.0",
         "nodemon": "^2.0.20"
     }
 }
