@@ -91,17 +91,25 @@ app.post('/api/people', (request, response, next) => {
         })
     }
 
-    const person = new Person({
-        name,
-        number,
-    })
+    Person.find({ name }).then((result) => {
+        if (result.length > 0) {
+            return response.status(400).json({
+                error: 'Could not create an entry. Name must be unique.',
+            })
+        } else {
+            const person = new Person({
+                name,
+                number,
+            })
 
-    person
-        .save()
-        .then((savedPerson) => {
-            response.json(savedPerson)
-        })
-        .catch((err) => next(err))
+            person
+                .save()
+                .then((savedPerson) => {
+                    response.json(savedPerson)
+                })
+                .catch((err) => next(err))
+        }
+    })
 })
 
 app.put('/api/people/:id', (request, response, next) => {

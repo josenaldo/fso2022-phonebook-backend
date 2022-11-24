@@ -1,0 +1,51 @@
+# Update Cassiana's name and number
+put http://localhost:3001/api/people/637e6bfccce105fb034979c8
+Content-Type: application/json
+
+{
+    "name": "Cassiana Gabriela",
+    "number": "333-33333"
+}
+
+###
+
+# Update Cassiana's name
+put http://localhost:3001/api/people/637e6bfccce105fb034979c8
+Content-Type: application/json
+
+{
+    "name": "Cassiana"
+}
+
+###
+
+# Update Cassiana's number
+put http://localhost:3001/api/people/637e6bfccce105fb034979c8
+Content-Type: application/json
+
+{
+    "number": "333-22222"
+}
+
+
+###
+
+# Use a invalid number: less than 8 characters
+# Use a invalid name: less than 3 characters
+put http://localhost:3001/api/people/637e6bfccce105fb034979c8
+Content-Type: application/json
+
+{
+    "name": "Ca",
+    "number": "99999"
+}
+
+###
+
+# Use a invalid number: no dash character
+put http://localhost:3001/api/people/637e6bfccce105fb034979c8
+Content-Type: application/json
+
+{
+    "number": "123456789"
+}

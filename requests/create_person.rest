@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
     "name": "Josenaldo Matos",
-    "number": "11-99999-9999"
+    "number": "999-999999"
 }
 
 ###
@@ -25,4 +25,27 @@ Content-Type: application/json
 
 {
     "number": "11-99999-9999"
+}
+
+
+###
+
+# Use a invalid number: less than 8 characters
+POST http://localhost:3001/api/people
+Content-Type: application/json
+
+{
+    "name": "Josenaldo Matos",
+    "number": "99999"
+}
+
+###
+
+# Use a invalid number: no dash character
+POST http://localhost:3001/api/people
+Content-Type: application/json
+
+{
+    "name": "Josenaldo Matos",
+    "number": "123456789"
 }
